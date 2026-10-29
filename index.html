@@ -1,18 +1,29 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Hot Shots</title><meta name="theme-color" content="#0B0B0C">
-<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hot Shots"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"><link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hot Shots"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v2.png"><link rel="icon" href="favicon-v2.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32-v2.png"><link rel="manifest" href="manifest.json?v=2">
 <style>
-html,body{margin:0;background:#0B0B0C;color:#F3EEE3;-webkit-text-size-adjust:100%}
+html,body{margin:0;background:#0B0B0C;color:#F3EEE3;-webkit-text-size-adjust:100%;height:auto;min-height:100%;overflow-y:auto}
+body{padding-top:env(safe-area-inset-top)}
 *{box-sizing:border-box}
-.pg{max-width:1024px;margin:0 auto;padding:16px 14px 96px}
-.pg-h h1{margin:0;font:700 22px/1.2 -apple-system,system-ui,sans-serif;letter-spacing:-.01em}
-.pg-s{margin-top:4px;font:13px/1.4 -apple-system,system-ui,sans-serif;color:#A1A1A6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.pg{max-width:1024px;margin:0 auto;padding:10px 14px calc(96px + env(safe-area-inset-bottom))}
+.pg-s{margin:0 0 8px;text-align:center;font:13px/1.4 -apple-system,system-ui,sans-serif;color:#A1A1A6;font-variant-numeric:tabular-nums}
 .pg-f{margin-top:28px;font:12px/1.5 -apple-system,system-ui,sans-serif;color:#8A8A90}.pg-f ul{margin:4px 0 0;padding-left:18px}
 .pg-fl{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));z-index:10;max-width:calc(100vw - 16px)}
-#err{padding:24px;color:#A1A1A6;font:14px system-ui}
-</style></head><body><div id="root"><div id="err">Loading…</div></div>
+#st{padding:48px 24px;text-align:center;color:#A1A1A6;font:15px/1.5 -apple-system,system-ui,sans-serif}
+#st button{margin-top:14px;padding:10px 22px;border-radius:999px;border:1px solid #2C2C2F;background:#161617;color:#F3EEE3;font:600 15px system-ui}
+</style></head><body><div id="root"><div id="st">Loading today's slate…</div></div>
 <script>
-fetch("data.json?t="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){window.__HS=d;var s=document.createElement("script");s.src="app.js?v="+encodeURIComponent(d.AS_OF||"");document.body.appendChild(s)}).catch(function(){document.getElementById("err").textContent="Couldn't load today's data. Pull to refresh."});
+(function(){
+if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations)navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})});
+function get(){return fetch("data.json?t="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.json()})}
+function load(){var st=document.getElementById("st");if(st)st.innerHTML="Loading today's slate…";
+ get().then(function(d){window.__HS=d;var s=document.createElement("script");s.src="app.js?v="+Date.now();s.onerror=fail;document.body.appendChild(s)}).catch(fail)}
+function fail(){var st=document.getElementById("st");if(st){st.innerHTML="Couldn't load today's data.<br><button id=rt>Try again</button>";document.getElementById("rt").onclick=load}}
+var last=0;function fresh(){if(!window.__HS||Date.now()-last<15000)return;last=Date.now();get().then(function(d){if(d.AS_OF!==window.__HS.AS_OF||d.NEXT_CHECK!==window.__HS.NEXT_CHECK)location.reload()}).catch(function(){})}
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")fresh()});
+window.addEventListener("pageshow",function(e){if(e.persisted)fresh()});
+load();
+})();
 </script></body></html>
