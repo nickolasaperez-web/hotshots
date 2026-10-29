@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Hot Shots</title><meta name="theme-color" content="#0B0B0C">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hot Shots"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"><link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="manifest" href="manifest.json">
+<style>
+html,body{margin:0;background:#0B0B0C;color:#F3EEE3;-webkit-text-size-adjust:100%}
+*{box-sizing:border-box}
+.pg{max-width:1024px;margin:0 auto;padding:16px 14px 96px}
+.pg-h h1{margin:0;font:700 22px/1.2 -apple-system,system-ui,sans-serif;letter-spacing:-.01em}
+.pg-s{margin-top:4px;font:13px/1.4 -apple-system,system-ui,sans-serif;color:#A1A1A6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.pg-f{margin-top:28px;font:12px/1.5 -apple-system,system-ui,sans-serif;color:#8A8A90}.pg-f ul{margin:4px 0 0;padding-left:18px}
+.pg-fl{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));z-index:10;max-width:calc(100vw - 16px)}
+#err{padding:24px;color:#A1A1A6;font:14px system-ui}
+</style></head><body><div id="root"><div id="err">Loading…</div></div>
+<script>
+fetch("data.json?t="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){window.__HS=d;var s=document.createElement("script");s.src="app.js?v="+encodeURIComponent(d.AS_OF||"");document.body.appendChild(s)}).catch(function(){document.getElementById("err").textContent="Couldn't load today's data. Pull to refresh."});
+</script></body></html>
